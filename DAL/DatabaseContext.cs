@@ -40,6 +40,7 @@ namespace DAL
             .HasData(
             new AppUser
             {
+                Id = 1,
                 CreateDate = DateTime.Now,
                 Email = "admin@AspNetCoreUrunSitesi",
                 IsActive = true,
