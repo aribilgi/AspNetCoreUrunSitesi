@@ -10,89 +10,89 @@ using System.Threading.Tasks;
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class ContactsController : Controller
     {
-        private readonly IRepository<Category> _repository;
+        private readonly IRepository<Contact> _repository;
 
-        public CategoriesController(IRepository<Category> repository)
+        public ContactsController(IRepository<Contact> repository)
         {
             _repository = repository;
         }
 
-        // GET: CategoriesController
+        // GET: ContactsController
         public async Task<ActionResult> IndexAsync()
         {
             return View(await _repository.GetAllAsync());
         }
 
-        // GET: CategoriesController/Details/5
+        // GET: ContactsController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: CategoriesController/Create
+        // GET: ContactsController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: CategoriesController/Create
+        // POST: ContactsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync(Category category)
+        public async Task<ActionResult> CreateAsync(Contact contact)
         {
             try
             {
-                await _repository.AddAsync(category);
+                await _repository.AddAsync(contact);
                 await _repository.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View(category);
+                return View();
             }
         }
 
-        // GET: CategoriesController/Edit/5
+        // GET: ContactsController/Edit/5
         public async Task<ActionResult> EditAsync(int id)
         {
             var data = await _repository.FindAsync(id);
             return View(data);
         }
 
-        // POST: CategoriesController/Edit/5
+        // POST: ContactsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Category category)
+        public ActionResult Edit(int id, Contact contact)
         {
             try
             {
-                _repository.Update(category);
+                _repository.Update(contact);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View(category);
+                ModelState.AddModelError("","Hata Oluştu!");
+                return View(contact);
             }
         }
 
-        // GET: CategoriesController/Delete/5
+        // GET: ContactsController/Delete/5
         public async Task<ActionResult> DeleteAsync(int id)
         {
             var data = await _repository.FindAsync(id);
             return View(data);
         }
 
-        // POST: CategoriesController/Delete/5
+        // POST: ContactsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteAsync(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Contact contact)
         {
             try
             {
-                var data = await _repository.FindAsync(id);
-                var sonuc = _repository.Delete(data);
+                var sonuc = _repository.Delete(contact);
                 if (sonuc > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -100,9 +100,9 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
             }
             catch
             {
-                ModelState.AddModelError("","Kayıt Silinemedi!");
+                ModelState.AddModelError("", "Kayıt Silinemedi!");
             }
-            return View();
+            return View(contact);
         }
     }
 }

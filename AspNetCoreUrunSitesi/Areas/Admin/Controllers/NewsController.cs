@@ -1,4 +1,5 @@
-﻿using BL;
+﻿using AspNetCoreUrunSitesi.Utils;
+using BL;
 using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,99 +11,101 @@ using System.Threading.Tasks;
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class NewsController : Controller
     {
-        private readonly IRepository<Category> _repository;
+        private readonly IRepository<News> _repository;
 
-        public CategoriesController(IRepository<Category> repository)
+        public NewsController(IRepository<News> repository)
         {
             _repository = repository;
         }
 
-        // GET: CategoriesController
+        // GET: NewsController
         public async Task<ActionResult> IndexAsync()
         {
             return View(await _repository.GetAllAsync());
         }
 
-        // GET: CategoriesController/Details/5
+        // GET: NewsController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: CategoriesController/Create
+        // GET: NewsController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: CategoriesController/Create
+        // POST: NewsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync(Category category)
+        public async Task<ActionResult> CreateAsync(News news, IFormFile Image)
         {
             try
             {
-                await _repository.AddAsync(category);
+                news.Image = FileHelper.FileLoader(Image);
+                await _repository.AddAsync(news);
                 await _repository.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View(category);
+                return View(news); // hataya düşerse patlamaması için news i sayfaya geri gönder
             }
         }
 
-        // GET: CategoriesController/Edit/5
+        // GET: NewsController/Edit/5
         public async Task<ActionResult> EditAsync(int id)
         {
             var data = await _repository.FindAsync(id);
             return View(data);
         }
 
-        // POST: CategoriesController/Edit/5
+        // POST: NewsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Category category)
+        public ActionResult Edit(int id, News news, IFormFile Image, bool resmiSil)
         {
             try
             {
-                _repository.Update(category);
+                if (Image != null)
+                {
+                    news.Image = FileHelper.FileLoader(Image);
+                }
+                if (resmiSil == true)
+                {
+                    news.Image = string.Empty;
+                }
+                _repository.Update(news);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View(category);
+                return View(news);
             }
         }
 
-        // GET: CategoriesController/Delete/5
-        public async Task<ActionResult> DeleteAsync(int id)
+        // GET: NewsController/Delete/5
+        public ActionResult Delete(int id)
         {
-            var data = await _repository.FindAsync(id);
-            return View(data);
+            return View();
         }
 
-        // POST: CategoriesController/Delete/5
+        // POST: NewsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteAsync(int id, IFormCollection collection)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
-                var data = await _repository.FindAsync(id);
-                var sonuc = _repository.Delete(data);
-                if (sonuc > 0)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-                ModelState.AddModelError("","Kayıt Silinemedi!");
+                return View();
             }
-            return View();
         }
     }
 }
