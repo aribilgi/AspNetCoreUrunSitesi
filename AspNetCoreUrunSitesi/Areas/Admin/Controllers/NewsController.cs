@@ -4,8 +4,6 @@ using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
@@ -88,23 +86,25 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         }
 
         // GET: NewsController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
-            return View();
+            var data = await _repository.FindAsync(id);
+            return View(data);
         }
 
         // POST: NewsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, News news)
         {
             try
             {
+                _repository.Delete(news);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(news);
             }
         }
     }
