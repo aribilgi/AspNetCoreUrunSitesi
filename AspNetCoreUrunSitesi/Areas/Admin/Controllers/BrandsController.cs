@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Entities;
 using BL;
 using AspNetCoreUrunSitesi.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize] // Authorize attribute u bu controller a gelecek isteklerin admin girişi yapılmış olması şartını koşar, giriş yapmamış istekler engellenir.
     public class BrandsController : Controller
     {
         private readonly IRepository<Brand> _repository;

@@ -1,6 +1,7 @@
 ﻿using AspNetCoreUrunSitesi.Utils;
 using BL;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class PostsController : Controller
     {
         private readonly IRepository<Post> _repository;
@@ -70,24 +71,19 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         // POST: PostsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Post post, IFormFile Image, bool resmiSil)
+        public async Task<ActionResult> EditAsync(int id, Post post, IFormFile Image, bool resmiSil)
         {
             try
             {
-                if (Image != null)
-                {
-                    post.Image = FileHelper.FileLoader(Image);
-                }
-                if (resmiSil == true)
-                {
-                    post.Image = string.Empty;
-                }
+                if (Image != null) post.Image = FileHelper.FileLoader(Image);                
+                if (resmiSil == true) post.Image = string.Empty;
                 _repository.Update(post);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+                return View(post);
             }
         }
 

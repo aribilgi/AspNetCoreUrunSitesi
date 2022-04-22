@@ -13,9 +13,9 @@ namespace Entities
         public string Content { get; set; }
         [DisplayName("Resim"), StringLength(50)]
         public string Image { get; set; }
-        [DisplayName("Ürün Fiyatı")]
+        [DisplayName("Ürün Fiyatı"), Required(ErrorMessage = "Ürün Fiyatı Boş Geçilemez!")]
         public decimal Price { get; set; }
-        [DisplayName("Ürün Stok")]
+        [DisplayName("Ürün Stok"), Required(ErrorMessage = "Ürün Stok Boş Geçilemez!")]
         public int Stock { get; set; }
         [DisplayName("Durum")]
         public bool IsActive { get; set; }

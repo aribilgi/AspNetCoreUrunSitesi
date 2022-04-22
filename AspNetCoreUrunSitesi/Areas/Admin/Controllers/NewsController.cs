@@ -1,6 +1,7 @@
 ﻿using AspNetCoreUrunSitesi.Utils;
 using BL;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class NewsController : Controller
     {
         private readonly IRepository<News> _repository;

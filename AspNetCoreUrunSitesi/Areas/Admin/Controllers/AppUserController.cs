@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BL;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
 {
-    [Area("Admin")] // Bu attribute u yazmazsak aşağıdaki sayfalar 404 bulunamadı hatası verir!
+    [Area("Admin"), Authorize] // Bu attribute u yazmazsak aşağıdaki sayfalar 404 bulunamadı hatası verir!
     public class AppUserController : Controller
     {
         AppUserManager manager = new AppUserManager(); // Normalde kullandığımız klasik yöntem

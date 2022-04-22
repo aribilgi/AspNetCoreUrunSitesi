@@ -1,16 +1,16 @@
-﻿using BL;
+﻿using AspNetCoreUrunSitesi.Utils;
+using BL;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class ProductsController : Controller
     {
         private readonly IRepository<Product> _repository;
@@ -43,57 +43,69 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         // POST: ProductsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> CreateAsync(Product product, IFormFile Image)
         {
             try
             {
-                return RedirectToAction(nameof(IndexAsync));
+                product.Image = FileHelper.FileLoader(Image);
+                await _repository.AddAsync(product);
+                await _repository.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+                return View(product);
             }
         }
 
         // GET: ProductsController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> EditAsync(int id)
         {
-            return View();
+            ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+            var data = await _repository.FindAsync(id);
+            return View(data);
         }
 
         // POST: ProductsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> EditAsync(int id, Product product, IFormFile Image, bool resmiSil)
         {
             try
             {
-                return RedirectToAction(nameof(IndexAsync));
+                if (Image != null) product.Image = FileHelper.FileLoader(Image);                
+                if (resmiSil == true) product.Image = string.Empty;
+                _repository.Update(product);
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+                return View(product);
             }
         }
 
         // GET: ProductsController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
-            return View();
+            var data = await _repository.FindAsync(id);
+            return View(data);
         }
 
         // POST: ProductsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Product product)
         {
             try
             {
-                return RedirectToAction(nameof(IndexAsync));
+                _repository.Delete(product);
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(product);
             }
         }
     }
