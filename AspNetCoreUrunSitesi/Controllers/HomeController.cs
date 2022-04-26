@@ -1,4 +1,6 @@
 ﻿using AspNetCoreUrunSitesi.Models;
+using BL;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,15 +14,20 @@ namespace AspNetCoreUrunSitesi.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IRepository<Slider> _sliderRepository;
+        public HomeController(ILogger<HomeController> logger, IRepository<Slider> sliderRepository)
         {
             _logger = logger;
+            _sliderRepository = sliderRepository;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var model = new HomePageViewModel() // Anasayfa modelimizden bir nesne oluşturduk
+            {
+                Sliders = _sliderRepository.GetAll() // Modelimizin içindeki slider listesini doldurduk
+            };
+            return View(model); // İçini doldurduğumuz modelimizi view a gönderdik
         }
 
         public IActionResult Privacy()

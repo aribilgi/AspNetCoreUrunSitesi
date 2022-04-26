@@ -11,7 +11,7 @@ namespace Entities
         public string Name { get; set; }
         [DisplayName("İçerik"), Required(ErrorMessage = "İçerik Boş Geçilemez!"), DataType(DataType.MultilineText)]
         public string Content { get; set; }
-        [DisplayName("Resim"), StringLength(50)]
+        [DisplayName("Resim"), StringLength(150)]
         public string Image { get; set; }
         [DisplayName("Durum")]
         public bool IsActive { get; set; }

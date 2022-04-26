@@ -17,7 +17,7 @@ namespace Entities
         public string Phone { get; set; }
         [DisplayName("Kullanıcı Adı"), StringLength(50), Required]
         public string Username { get; set; }
-        [DisplayName("Şifre"), StringLength(150), Required]
+        [DisplayName("Şifre"), StringLength(150), Required, DataType(DataType.Password)]
         public string Password { get; set; }
         [DisplayName("Durum")]
         public bool IsActive { get; set; }

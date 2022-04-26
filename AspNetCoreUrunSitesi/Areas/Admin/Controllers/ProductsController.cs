@@ -15,10 +15,12 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
     {
         private readonly IRepository<Product> _repository;
         private readonly IRepository<Category> _categoryRepository;
-        public ProductsController(IRepository<Product> repository, IRepository<Category> categoryRepository)
+        private readonly IRepository<Brand> _brandRepository;
+        public ProductsController(IRepository<Product> repository, IRepository<Category> categoryRepository, IRepository<Brand> brandRepository)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
+            _brandRepository = brandRepository;
         }
 
         // GET: ProductsController
@@ -37,6 +39,7 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         public async Task<ActionResult> CreateAsync()
         {
             ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.BrandId = new SelectList(await _brandRepository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -55,6 +58,7 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
             catch
             {
                 ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+                ModelState.AddModelError("", "Hata Oluştu!");
                 return View(product);
             }
         }
@@ -63,6 +67,7 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         public async Task<ActionResult> EditAsync(int id)
         {
             ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.BrandId = new SelectList(await _brandRepository.GetAllAsync(), "Id", "Name");
             var data = await _repository.FindAsync(id);
             return View(data);
         }
@@ -74,7 +79,7 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         {
             try
             {
-                if (Image != null) product.Image = FileHelper.FileLoader(Image);                
+                if (Image != null) product.Image = FileHelper.FileLoader(Image);
                 if (resmiSil == true) product.Image = string.Empty;
                 _repository.Update(product);
                 return RedirectToAction(nameof(Index));
@@ -82,6 +87,7 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
             catch
             {
                 ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+                ViewBag.BrandId = new SelectList(await _brandRepository.GetAllAsync(), "Id", "Name");
                 return View(product);
             }
         }

@@ -11,7 +11,7 @@ namespace Entities
         public string Name { get; set; }
         [DisplayName("İçerik"), Required(ErrorMessage = "İçerik Boş Geçilemez!"), DataType(DataType.MultilineText)]
         public string Content { get; set; }
-        [DisplayName("Resim"), StringLength(50)]
+        [DisplayName("Resim"), StringLength(150)]
         public string Image { get; set; }
         [DisplayName("Ürün Fiyatı"), Required(ErrorMessage = "Ürün Fiyatı Boş Geçilemez!")]
         public decimal Price { get; set; }
@@ -24,5 +24,8 @@ namespace Entities
         [DisplayName("Ürün Kategorisi")]
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
+        [DisplayName("Ürün Markası")]
+        public int BrandId { get; set; }
+        public virtual Brand Brand { get; set; }
     }
 }
