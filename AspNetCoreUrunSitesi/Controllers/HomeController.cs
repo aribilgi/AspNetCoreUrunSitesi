@@ -15,17 +15,20 @@ namespace AspNetCoreUrunSitesi.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IRepository<Slider> _sliderRepository;
-        public HomeController(ILogger<HomeController> logger, IRepository<Slider> sliderRepository)
+        private readonly IRepository<Product> _productRepository;
+        public HomeController(ILogger<HomeController> logger, IRepository<Slider> sliderRepository, IRepository<Product> productRepository)
         {
             _logger = logger;
             _sliderRepository = sliderRepository;
+            _productRepository = productRepository;
         }
 
         public IActionResult Index()
         {
             var model = new HomePageViewModel() // Anasayfa modelimizden bir nesne oluşturduk
             {
-                Sliders = _sliderRepository.GetAll() // Modelimizin içindeki slider listesini doldurduk
+                Sliders = _sliderRepository.GetAll(), // Modelimizin içindeki slider listesini doldurduk
+                Products = _productRepository.GetAll()
             };
             return View(model); // İçini doldurduğumuz modelimizi view a gönderdik
         }
