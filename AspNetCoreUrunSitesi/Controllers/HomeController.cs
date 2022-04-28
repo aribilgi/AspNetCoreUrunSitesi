@@ -16,11 +16,14 @@ namespace AspNetCoreUrunSitesi.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IRepository<Slider> _sliderRepository;
         private readonly IRepository<Product> _productRepository;
-        public HomeController(ILogger<HomeController> logger, IRepository<Slider> sliderRepository, IRepository<Product> productRepository)
+        private readonly IRepository<News> _newsRepository;
+
+        public HomeController(ILogger<HomeController> logger, IRepository<Slider> sliderRepository, IRepository<Product> productRepository, IRepository<News> newsRepository)
         {
             _logger = logger;
             _sliderRepository = sliderRepository;
             _productRepository = productRepository;
+            _newsRepository = newsRepository;
         }
 
         public IActionResult Index()
@@ -28,7 +31,8 @@ namespace AspNetCoreUrunSitesi.Controllers
             var model = new HomePageViewModel() // Anasayfa modelimizden bir nesne oluşturduk
             {
                 Sliders = _sliderRepository.GetAll(), // Modelimizin içindeki slider listesini doldurduk
-                Products = _productRepository.GetAll()
+                Products = _productRepository.GetAll(),
+                News = _newsRepository.GetAll()
             };
             return View(model); // İçini doldurduğumuz modelimizi view a gönderdik
         }

@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Entities.Category>
+
+    <div class="dropdown">
+        <a class="dropdown-toggle nav-link px-2 link-dark" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Ürünlerimiz
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <a href="#" class="dropdown-item">@item.Name</a>
+                </li>
+            }
+        </ul>
+    </div>
+
