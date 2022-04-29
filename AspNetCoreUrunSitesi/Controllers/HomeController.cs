@@ -13,14 +13,14 @@ namespace AspNetCoreUrunSitesi.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IRepository<Contact> _contactRepository;
         private readonly IRepository<Slider> _sliderRepository;
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<News> _newsRepository;
 
-        public HomeController(ILogger<HomeController> logger, IRepository<Slider> sliderRepository, IRepository<Product> productRepository, IRepository<News> newsRepository)
+        public HomeController(IRepository<Contact> contactRepository, IRepository<Slider> sliderRepository, IRepository<Product> productRepository, IRepository<News> newsRepository)
         {
-            _logger = logger;
+            _contactRepository = contactRepository;
             _sliderRepository = sliderRepository;
             _productRepository = productRepository;
             _newsRepository = newsRepository;
@@ -37,9 +37,32 @@ namespace AspNetCoreUrunSitesi.Controllers
             return View(model); // İçini doldurduğumuz modelimizi view a gönderdik
         }
 
-        public IActionResult Privacy()
+        public IActionResult Contacts()
         {
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ContactsAsync(Contact contact)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _contactRepository.AddAsync(contact);
+                    var sonuc = await _contactRepository.SaveChangesAsync();
+                    if (sonuc > 0)
+                    {
+                        TempData["Mesaj"] = "<div class='alert alert-success'>Teşekkürler.. Mesajınız İletildi!</div>";
+                    }
+                    else TempData["Mesaj"] = "<div class='alert alert-info'>Mesajınız Gönderilemedi!</div>";
+                    return RedirectToAction("Contacts");
+                }
+                catch (Exception)
+                {
+                    TempData["Mesaj"] = "<div class='alert alert-danger'>Hata Oluştu! <br /> Mesajınız Gönderilemedi!</div>";
+                }
+            }
+            return View(contact);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

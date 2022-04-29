@@ -3,6 +3,7 @@ using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
 
@@ -31,8 +32,9 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         }
 
         // GET: CategoriesController/Create
-        public ActionResult Create()
+        public async Task<ActionResult> CreateAsync()
         {
+            ViewBag.ParentId = new SelectList(await _repository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -57,6 +59,7 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
         public async Task<ActionResult> EditAsync(int id)
         {
             var data = await _repository.FindAsync(id);
+            ViewBag.ParentId = new SelectList(await _repository.GetAllAsync(), "Id", "Name");
             return View(data);
         }
 

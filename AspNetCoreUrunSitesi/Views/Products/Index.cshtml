@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Entities.Product>
+
+@{
+    ViewData["Title"] = ViewBag.KategoriAdi;
+}
+
+<h1>@ViewBag.KategoriAdi</h1>
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <a asp-controller="Products" asp-action="Detail" asp-route-id="@item.Id">
+                        <div class="card shadow-sm">
+                            <img src="/Img/@item.Image" alt="@item.Name" title="@item.Name" class="bd-placeholder-img card-img-top" />
+                            <div class="card-body">
+                                <p class="card-text">
+                                    @item.Name
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+             }
+        </div>
+    </div>
+</div>
