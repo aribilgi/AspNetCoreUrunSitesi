@@ -58,6 +58,7 @@ namespace AspNetCoreUrunSitesi.Areas.Admin.Controllers
             catch
             {
                 ViewBag.CategoryId = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+                ViewBag.BrandId = new SelectList(await _brandRepository.GetAllAsync(), "Id", "Name");
                 ModelState.AddModelError("", "Hata Oluştu!");
                 return View(product);
             }
