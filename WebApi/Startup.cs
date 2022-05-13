@@ -49,9 +49,11 @@ namespace WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
             }
 
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection(); // Http isteklerini Https ye yönlendir
 
-            app.UseRouting();
+            app.UseStaticFiles(); // Projede dosya yükleme iþlemleri yapýlacaksa bu kodu aktif ediyoruz
+
+            app.UseRouting(); // Routing i(adres çubuðundan controller, id kullanýmýný) aktif et
 
             app.UseAuthorization();
 

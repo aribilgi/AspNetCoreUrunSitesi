@@ -8,58 +8,56 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandsController : ControllerBase
+    public class PostsController : ControllerBase
     {
-        private readonly IRepository<Brand> _repository;
+        private readonly IRepository<Post> _repository;
 
-        public BrandsController(IRepository<Brand> repository)
+        public PostsController(IRepository<Post> repository)
         {
             _repository = repository;
         }
 
+        // GET: api/<PostsController>
         [HttpGet]
-        public async Task<IEnumerable<Brand>> GetAsync()
+        public async Task<IEnumerable<Post>> GetAsync()
         {
             return await _repository.GetAllAsync();
         }
 
-        // GET api/<BrandsController>/5
+        // GET api/<PostsController>/5
         [HttpGet("{id}")]
-        public async Task<Brand> GetAsync(int id)
+        public async Task<Post> GetAsync(int id)
         {
             return await _repository.FindAsync(id);
         }
 
-        // POST api/<BrandsController>
+        // POST api/<PostsController>
         [HttpPost]
-        public async Task<ActionResult<Brand>> PostAsync(Brand brand)
+        public async Task<ActionResult<Post>> PostAsync(Post post)
         {
-            await _repository.AddAsync(brand);
+            await _repository.AddAsync(post);
             await _repository.SaveChangesAsync();
 
-            return CreatedAtAction("Get", new { id = brand.Id }, brand);
+            return CreatedAtAction("Get", new { id = post.Id }, post);
         }
 
-        // PUT api/<BrandsController>/5
+        // PUT api/<PostsController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, Brand brand)
+        public async Task<ActionResult> Put(int id, Post post)
         {
-            if (id != brand.Id) return BadRequest();            
-            _repository.Update(brand);
+            if (id != post.Id) return BadRequest();
+            _repository.Update(post);
             await _repository.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // DELETE api/<BrandsController>/5
+        // DELETE api/<PostsController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             var kayit = await _repository.FindAsync(id);
-            if (kayit == null)
-            {
-                return NotFound();
-            }
+            if (kayit == null) return NotFound();
             _repository.Delete(kayit);
             return NoContent();
         }
