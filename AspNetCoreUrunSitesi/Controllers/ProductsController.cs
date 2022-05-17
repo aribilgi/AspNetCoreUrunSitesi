@@ -25,6 +25,7 @@ namespace AspNetCoreUrunSitesi.Controllers
             {
                 var kategori = _categoryRepository.Find(id.Value);
                 ViewBag.KategoriAdi = kategori.Name;
+                ViewBag.KategoriAciklamasi = kategori.Descripton;
                 return View(_productRepository.GetAll(x => x.CategoryId == id)); // Eğer id parametresine bir kategori id si gönderilmişse o zaman bu gelen kategori id ye eşit kategori id değeri atanmış ürünleri filtrele ve listele
             }
             ViewBag.KategoriAdi = "Tüm Ürünlerimiz";
