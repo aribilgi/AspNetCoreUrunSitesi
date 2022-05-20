@@ -5,10 +5,9 @@
     <div class="carousel-inner">
         @foreach (var item in Model.Sliders)
         {
-            <div class="carousel-item @(item == Model.Sliders.FirstOrDefault() ? "active" : "")">
-                <img src="~/Img/@item.Image" class="img-fluid" />
-            </div>
-        }
+<div class="carousel-item @(item == Model.Sliders.FirstOrDefault() ? "active" : "")">
+    <img src="~/Img/@item.Image" class="img-fluid" />
+</div>}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -23,19 +22,8 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             @foreach (var item in Model.Products)
             {
-<div class="col">
-    <a asp-controller="Products" asp-action="Detail" asp-route-id="@item.Id">
-        <div class="card shadow-sm">
-            <img src="/Img/@item.Image" alt="@item.Name" title="@item.Name" class="bd-placeholder-img card-img-top" />
-            <div class="card-body">
-                <p class="card-text">
-                    @item.Name
-                </p>
-            </div>
-        </div>
-    </a>
-</div>
-}
+                @await Html.PartialAsync("_ViewProduct", item)
+            }
         </div>
     </div>
 </div>

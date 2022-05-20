@@ -2,11 +2,8 @@
 using BL;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AspNetCoreUrunSitesi.Controllers
@@ -48,6 +45,7 @@ namespace AspNetCoreUrunSitesi.Controllers
             {
                 try
                 {
+                    //Utils.MailHelper.SendMail(contact); // parametreden gelen contact nesnesi içindeki bilgileri mail ile göndermek için.
                     await _contactRepository.AddAsync(contact);
                     var sonuc = await _contactRepository.SaveChangesAsync();
                     if (sonuc > 0)

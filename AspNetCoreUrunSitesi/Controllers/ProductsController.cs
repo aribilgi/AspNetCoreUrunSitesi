@@ -31,6 +31,7 @@ namespace AspNetCoreUrunSitesi.Controllers
             ViewBag.KategoriAdi = "Tüm Ürünlerimiz";
             return View(_productRepository.GetAll()); // eğer bir kategori id si gönderilmemişse tüm ürünleri listele
         }
+
         public async Task<IActionResult> DetailAsync(int? id)
         {
             if (id == null) // Eğer detay sayfasına url den id gelmemişse
@@ -39,5 +40,22 @@ namespace AspNetCoreUrunSitesi.Controllers
             }
             return View(await _productRepository.FindAsync(id.Value));
         }
+
+        public IActionResult Search(string search) // Arama için kullanılan textbox a name olarak ne isim verdiysek burada "string textboxaverilenisim" ile yakalayabiliriz.
+        {
+            var aramasonucu = _productRepository.GetAll(s => s.Name.Contains(search));
+
+            if (aramasonucu.Count() > 0) // Eğer gelen kelimeyi içeren ürün veya ürünler bulunmuşsa (count metodu sonuçları saymaya yarar)
+            {
+                ViewBag.AramaSonucu = search + " kelimesine ait ürünler";
+            }
+            else
+            {
+                ViewBag.AramaSonucu = search + " kelimesine ait ürün bulunamamıştır!";
+            }
+
+            return View(aramasonucu); // Ürünleri search ile query stringden gelen anahtar kelimeyi içerenleri kapsayacak şekilde filtrele
+        }
+
     }
 }

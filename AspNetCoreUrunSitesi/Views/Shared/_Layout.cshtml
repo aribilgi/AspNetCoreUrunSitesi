@@ -24,8 +24,13 @@
                     <li><a href="/Home/Contacts" class="nav-link px-2 link-dark">İletişim</a></li>
                 </ul>
 
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                    <input type="search" class="form-control" placeholder="Ara..." aria-label="Search">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 row" asp-controller="Products" asp-action="Search" method="get">
+                    <div class="col p-0">
+                        <input name="search" id="search" type="search" class="form-control" placeholder="Ara..." aria-label="Search">
+                    </div>
+                    <div class="col p-0">
+                        <input id="Submit1" type="submit" value="Ara" class="btn btn-primary" />
+                    </div>
                 </form>
             </div>
         </div>
