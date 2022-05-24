@@ -22,6 +22,7 @@ namespace AspNetCoreUrunSitesi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient(); // Controllerda HttpClient nesnesi ile api iþlemlerini kullanabilmek için
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSession(); // Projede session kullanmak istiyoruz
@@ -61,6 +62,11 @@ namespace AspNetCoreUrunSitesi
 
             app.UseEndpoints(endpoints =>
             {
+                // ApiAdmin klasörünü routing de kullanabilmek için bu yapýlandýrma gerekli
+                endpoints.MapControllerRoute(
+                name: "ApiAdmin", // diðer arealarla çakýþmamasý için klasör ismini verdik
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+              );
                 endpoints.MapControllerRoute(
                 name: "admin", // area adýný buraya yazýyoruz
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
