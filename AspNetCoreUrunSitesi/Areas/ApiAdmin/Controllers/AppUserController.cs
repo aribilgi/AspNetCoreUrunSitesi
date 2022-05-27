@@ -2,17 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net; // Api işlemleri için gerekli kütüphane
 using System.Net.Http; // Aşağıdaki IHttpClientFactory interface ini kullanabilmek için
 using System.Text; // Api işlemlerinde gerekli
 using System.Threading.Tasks;
 using Newtonsoft.Json; // Bu paketi nuget tan yüklüyoruz. String verileri Json formatına, Json formatındaki verileri de string formata çevirmemizi sağlıyor
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreUrunSitesi.Areas.ApiAdmin.Controllers
 {
-    [Area("ApiAdmin")]
+    [Area("ApiAdmin"), Authorize] // Authorize attrubute u bu controller daki tüm actionlara sadece oturum açan admin kullanıcılarının erişmesini sağlamak için gerekli, bunu koymazsak panelimize adresi yazan herkes erişir!!
     public class AppUserController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -77,40 +76,83 @@ namespace AspNetCoreUrunSitesi.Areas.ApiAdmin.Controllers
         }
 
         // GET: AppUserController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> EditAsync(int? id) // int? soru işareti id bilgisin boş geçilebileceği anlamına gelir
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync(apiAdres + "/" + id); // client.GetAsync metodu ile api ye bir get isteği gönderilir. Sonuna id bilgisini de gönderiyoruz ki tüm kayıtlar gelmesin sadece gönderdiğimiz id ye ait kayıt bilgisi gelsin.
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<AppUser>(jsonData);
+                return View(data);
+            }
             return View();
         }
 
         // POST: AppUserController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> EditAsync(int id, AppUser appUser)
         {
-            try
+            if (id != appUser.Id) // Eğer güncelleme için gönderilen url deki id ile appuser ın id si eşleşmiyorsa
             {
-                return RedirectToAction(nameof(IndexAsync));
+                return NotFound();
             }
-            catch
+            if (ModelState.IsValid)
             {
-                return View();
+                try
+                {
+                    var client = _httpClientFactory.CreateClient();
+                    var jsonData = JsonConvert.SerializeObject(appUser); // sayfadan gelen appUser ı json a çevir
+                    StringContent stringContent = new(jsonData, Encoding.UTF8, "application/json");
+                    var responseMessage = await client.PutAsync(apiAdres + "/" + id, stringContent); // Api ye kayıt güncelleme için client.PutAsync metodu ile bir put isteği gönderiyoruz. Api de güncelleme metodu put çünkü.
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else ModelState.AddModelError("", "Kayıt Güncellenemedi!");
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Hata Oluştu! Kayıt Güncellenemedi!");
+                }
             }
+            return View(appUser); // eğer model geçersizse appUser ı sayfaya hatalarıyla beraber geri gönder
         }
 
         // GET: AppUserController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync(apiAdres + "/" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<AppUser>(jsonData);
+                return View(data);
+            }
             return View();
         }
 
         // POST: AppUserController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteAsync(int id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(IndexAsync));
+                var client = _httpClientFactory.CreateClient();
+                await client.DeleteAsync(apiAdres + "/" + id); // Api ye client.DeleteAsync metodu ile delete isteği gönderiyoruz, silinecek id ile birlikte isteği yaptığımızda kayıt silinecektir.
+
+                return RedirectToAction(nameof(Index));
             }
             catch
             {

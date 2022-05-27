@@ -30,7 +30,7 @@ namespace AspNetCoreUrunSitesi
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // Dependency Injection ile projemize IRepository ile nesne oluþurulursa oraya Repository classýndan bir örnek göndermesini söyledik
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x =>
             {
-                x.LoginPath = "/Admin/Login"; // Admin giriþ ekranýmýz
+                x.LoginPath = "/ApiAdmin/Login"; // Admin giriþ ekranýmýz
             });
 
             //Diðer Dependency Injection yöntemleri :
